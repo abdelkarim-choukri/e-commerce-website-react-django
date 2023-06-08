@@ -9,6 +9,7 @@ export const fetchProductDetails  = createAsyncThunk(
   }
 );
 
+
 export const productDetailSlice = createSlice({
   name: 'productDetails',
   initialState: { product: { reviews: [] }, loading: false, error: null },
@@ -21,6 +22,7 @@ export const productDetailSlice = createSlice({
       .addCase(fetchProductDetails.fulfilled, (state, action) => {
         state.loading = false;
         state.product = action.payload;
+        localStorage.setItem('product', JSON.stringify(action.payload));
       })
       .addCase(fetchProductDetails.rejected, (state, action) => {
         state.loading = false;
