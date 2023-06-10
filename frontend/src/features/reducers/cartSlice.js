@@ -7,52 +7,77 @@ export const fetchCartItems  = createAsyncThunk(
   async ({id,qty}) => {
     console.log('fetch:',id,qty)
     const response = await axios.get(`/api/products/${id}`);
-    const updatedResponse = { ...response.data, qty };
-    console.log("fetch",updatedResponse);
-    return updatedResponse;
+    // const updatedResponse = { ...response.data, qty };
+    console.log('response',response);
+    const data={
+      product: response.data._id,
+      name: response.data.name,
+      image: response.data.image,
+      price: response.data.price,
+      countInStock: response.data.countInStock,
+      qty,
+    };
+    
+    console.log("fetchdata",data);
+    return data;
   }
 );
 
+
+const initialState={
+  cartItems:JSON.parse(localStorage.getItem('cartItems')) || [],
+  newCart:{},
+  // isLoading: false,
+};
 const cartSlice=createSlice({
 name:'cart',
-initialState:{
-    cartItems:[],
-},
+initialState,
 reducers:{
 addToCart: (state, action) => {
-    const item = action.payload;
-    console.log("item:", item);
-    
-    // const existItemIndex = state.cartItems.findIndex((x) => x.product === item.product);
-    // existItemIndex !== -1
-    //     ? (state.cartItems[existItemIndex] = item)
-    //     : state.cartItems.push(cartItems);
-    
-    // localStorage.setItem('cartItems', JSON.stringify(state.cartItems));
-    },
+  
+localStorage.setItem('cartItems', JSON.stringify(state.cartItems));
+
+},
 removeFromCart:(state,action)=>{
     const productId = action.payload;
     state.cartItems = state.cartItems.filter((x) => x.product !== productId);
     localStorage.setItem('cartItems', JSON.stringify(state.cartItems));
 },
-
+},
 extraReducers: (builder) => {
     builder
       .addCase(fetchCartItems.pending, (state) => {
         state.isLoading = true;
       })
       .addCase(fetchCartItems.fulfilled, (state, action) => {
-        // console.log(action);
+        // // console.log(action);
         state.isLoading = false;
-        state.cartItems = action.payload;
-        console.log("cartItems",state.cartItems);
+        // state.cartItems.push(action.payload);
+        // console.log("cartItems",state.cartItems);
+        // state.isLoading = false;
+
+        const id = action.payload.product;
+        console.log('id', id);
+
+        // Check if the item with the given id already exists in cartItems
+        const itemExists = state.cartItems.some((item) => item.product === id);
+        console.log('itemExists', itemExists);
+
+        if (!itemExists) {
+          // If the item does not exist, add it to the cartItems array
+          state.cartItems.push(action.payload);
+          localStorage.setItem('cartItems', JSON.stringify(state.cartItems));
+        }
+
+        // state.newCart=action.payload;
+        // state.cartItems.push(state.newCart);
       })
       .addCase(fetchCartItems.rejected, (state, action) => {
         state.isLoading = false;
 
       });
   },
-}
+
 
 })
 
@@ -63,62 +88,3 @@ export const { addToCart, removeFromCart } = cartSlice.actions;
 export default cartSlice.reducer;
 
 
-
-// import { createSlice } from '@reduxjs/toolkit';
-// import axios from 'axios';
-
-// const cartSlice = createSlice({
-//   name: 'cart',
-//   initialState: {
-//     cartItems: localStorage.getItem('cartItems')
-//       ? JSON.parse(localStorage.getItem('cartItems'))
-//       : [],
-//   },
-//   reducers: {
-//     addToCart: {
-//       reducer(state, action) {
-//         state.cartItems.push(action.payload);
-//       },
-//       prepare({ id, qty }) {
-//         return {
-//           payload: {
-//             id,
-//             qty,
-//           },
-//           meta: {
-//             thunk: 'cart/addToCart',
-//           },
-//         };
-//       },
-//     },
-//     removeFromCart: {
-//       reducer(state, action) {
-//         state.cartItems = state.cartItems.filter(
-//           (item) => item.product !== action.payload
-//         );
-//       },
-//       prepare(id) {
-//         return {
-//           payload: id,
-//           meta: {
-//             thunk: 'cart/removeFromCart',
-//           },
-//         };
-//       },
-//     },
-//   },
-//   extraReducers: (builder) => {
-//     builder
-//       .addCase(addToCart.fulfilled, (state, action) => {
-//         state.cartItems.push(action.payload);
-//       })
-//       .addCase(removeFromCart.fulfilled, (state, action) => {
-//         state.cartItems = state.cartItems.filter(
-//           (item) => item.product !== action.payload
-//         );
-//       });
-//   },
-// });
-
-// export const { addToCart, removeFromCart } = cartSlice.actions;
-// export default cartSlice.reducer;

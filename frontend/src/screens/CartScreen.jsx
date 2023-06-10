@@ -20,13 +20,14 @@ const CartScreen = () => {
     useEffect(() => {
       if (id) {
         dispatch(fetchCartItems({id,qty}));
-        // dispatch(addToCart(id, qty));
+        
       }
     }, [dispatch, id, qty]);
-
+    
+   
 
     // useEffect(() => {
-    //   dispatch(fetchCartDetails(id,qty));
+    //   dispatch(addToCart(id, qty));
     // }, [dispatch, id,qty]);
   
 
@@ -56,15 +57,14 @@ const CartScreen = () => {
                     <Image src={item.image} alt={item.name} fluid rounded />
                   </Col>
 
-                  <Col m={3}>
+                  <Col md={3}>
                     <Link to={`/product/${item.product}`}>{item.name}</Link>
                   </Col>
 
                   <Col>₹{item.price}</Col>
 
                   <Col md={3}>
-                    <Form.Control
-                      as="select"
+                    <Form.Select 
                       value={item.qty}
                       onChange={(e) =>
                         dispatch(
@@ -77,7 +77,7 @@ const CartScreen = () => {
                           {x + 1}
                         </option>
                       ))}
-                    </Form.Control>
+                    </Form.Select >
                   </Col>
 
                   <Col md={1}>

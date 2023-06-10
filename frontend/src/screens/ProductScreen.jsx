@@ -11,7 +11,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import Loader from '../components/Loader';
 import Message from '../components/Message';
 import { fetchProductDetails } from '../features/reducers/productDetailSlice';
-
+import { addToCart } from '../features/reducers/cartSlice';
 
 function ProductScreen({match}) {
 
