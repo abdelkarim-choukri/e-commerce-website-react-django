@@ -7,7 +7,6 @@ export const fetchCartItems  = createAsyncThunk(
   async ({id,qty}) => {
     console.log('fetch:',id,qty)
     const response = await axios.get(`/api/products/${id}`);
-    // const updatedResponse = { ...response.data, qty };
     console.log('response',response);
     const data={
       product: response.data._id,
@@ -34,7 +33,14 @@ name:'cart',
 initialState,
 reducers:{
 addToCart: (state, action) => {
-  
+  console.log(action.payload);
+  if (action.payload.id) {
+    state.cartItems.forEach(item => {
+      if (item.product === action.payload.id) {
+        item.qty = action.payload.newQty;
+      }
+    });
+  }
 localStorage.setItem('cartItems', JSON.stringify(state.cartItems));
 
 },
