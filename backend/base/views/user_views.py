@@ -2,9 +2,8 @@
 from django.core import paginator
 from django.shortcuts import render
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-
-
-from .models import *
+from django.contrib.auth.hashers import make_password
+from rest_framework import status
 
 # Rest Framework Import
 from rest_framework.decorators import api_view,permission_classes
@@ -22,20 +21,6 @@ from rest_framework_simplejwt.views import TokenObtainPairView
 from base.models import *
 
 
-@api_view(['GET'])
-
-def getProducts (request):
-    products=Product.objects.all()
-    Serializer = ProductSerializer(products,many=True)
-    return Response(Serializer.data)
-
-@api_view(['GET'])
-def getProduct(request,pk):
-    product= Product.objects.get(pk=pk)
-    Serializer=ProductSerializer(product)
-    return Response(Serializer.data)
-
-
 class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
     def validate(self, attrs):
         data = super().validate(attrs)
@@ -48,6 +33,21 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
 class MyTokenObtainPairView(TokenObtainPairView):
     serializer_class = MyTokenObtainPairSerializer
 
+@api_view(['POST'])
+def registerUser(request):
+    try:
+        data= request.data
+        user=User.objects.create(
+            first_name=data['name'],
+            username=data['email'],
+            email=data['email'],
+            password=make_password(data['password']),
+        )
+        serializer=UserSerializerWithToken(user,many=False)
+        return Response(serializer.data)
+    except:
+        message={"detail":"User with this email is already registered"}
+        return Response(message,status=status.HTTP_400_BAD_REQUEST)    
 
 @api_view(['GET']) 
 @permission_classes([IsAuthenticated])

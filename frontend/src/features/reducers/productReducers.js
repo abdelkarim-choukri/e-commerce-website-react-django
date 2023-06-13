@@ -30,10 +30,14 @@ export const productReducer = createSlice({
       })
       .addCase(fetchProductList.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.error.message;
+        // state.error = action.error.message;
+        state.error= action.error.response && action.error.response.data.detail
+            ? action.error.response.data.detail
+            : action.error.message;
+          });
+        },
       });
-  },
-});
+      
 
 
 

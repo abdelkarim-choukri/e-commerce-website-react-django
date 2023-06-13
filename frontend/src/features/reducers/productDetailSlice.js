@@ -26,7 +26,10 @@ export const productDetailSlice = createSlice({
       })
       .addCase(fetchProductDetails.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload;
+        // state.error = action.payload;
+        state.error= action.error.response && action.error.response.data.detail
+            ? action.error.response.data.detail
+            : action.error.message;
       });
   },
 });
