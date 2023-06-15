@@ -24,7 +24,7 @@ export const fetchCartItems  = createAsyncThunk(
 
 
 const initialState={
-  cartItems:JSON.parse(localStorage.getItem('cartItems')) || [],
+  cartItems:[],//JSON.parse(localStorage.getItem('cartItems')) || [],
   newCart:{},
   // isLoading: false,
 };

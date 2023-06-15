@@ -1,6 +1,7 @@
-const { createProxyMiddleware } = require('http-proxy');
+import { defineConfig } from 'vite';
+import { createProxyMiddleware } from 'http-proxy';
 
-module.exports = {
+export default defineConfig({
   server: {
     proxy: {
       '/api': {
@@ -19,4 +20,4 @@ module.exports = {
       },
     },
   },
-};
+});

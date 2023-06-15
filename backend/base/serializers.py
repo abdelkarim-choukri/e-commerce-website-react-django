@@ -20,7 +20,7 @@ class UserSerializer(serializers.ModelSerializer):
             name = obj.email
         return name
     def get__id(self,obj):
-        return obj.id
+        return obj.id # Custom logic to retrieve the id for the '_id' field
     def get_isAdmin(self,obj):
         return obj.is_staff
     
@@ -31,8 +31,8 @@ class UserSerializerWithToken(UserSerializer):
         fields = ['id','_id','username','email','name','isAdmin','token']
 
     def get_token(self,obj):
-        token = RefreshToken.for_user(obj)
-        return str(token.access_token)
+        token = RefreshToken.for_user(obj) # Generate a token for the user
+        return str(token.access_token) # Return the access token as a string
 
 class ProductSerializer(serializers.ModelSerializer):
 

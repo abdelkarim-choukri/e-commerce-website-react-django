@@ -13,6 +13,5 @@ urlpatterns =[
 
     path('',views.getUsers,name='Users'),
     path('register/',views.registerUser,name='Register-User'),
-    
-    # path('api/token/refresh/', views.MyTokenObtainPairSerializer, name='token_refresh'),
+
 ]
