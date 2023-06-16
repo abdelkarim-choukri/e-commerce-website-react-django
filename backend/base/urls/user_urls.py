@@ -10,7 +10,7 @@ urlpatterns =[
 
 
     path('profile/',views.getUserProfile,name='Users-profile'),
-
+    path('profile/update/',views.updateUserProfile,name="user_profile_update"),
     path('',views.getUsers,name='Users'),
     path('register/',views.registerUser,name='Register-User'),
 

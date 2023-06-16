@@ -50,7 +50,9 @@ const RegisterSlice=createSlice({
           })
           .addCase(fetchRegister.rejected, (state, action) => {
             state.isLoading = false;
-            state.error = action.error.message; // Store the error message in state if needed
+            state.error= action.error.response && action.error.response.data.detail
+            ? action.error.response.data.detail
+            : action.error.message; // Store the error message in state if needed
             console.log('fetchRegister rejected:', action.error.message);
       
     

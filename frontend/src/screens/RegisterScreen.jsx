@@ -40,10 +40,10 @@ function RegisterScreen() {
   const location = useLocation();
   const navigate = useNavigate();
   const redirect = location.search ? location.search.split("=")[1] : "/";
-  console.log('userInfo',userInfo)
+  // console.log('userInfo',userInfo)
   useEffect(() => {
     if (userInfo) {
-      console.log('Im in ');
+      console.log('Im in');
       navigate(redirect);
     }
   }, [userInfo]);
@@ -58,6 +58,7 @@ function RegisterScreen() {
       setMessage("Passwords do not match");
     } else {
       /* FIRING OFF THE ACTION CREATORS USING DISPATCH FOR REGISTER */
+      console.log(name, email, password)
       dispatch(fetchRegister({name, email, password}));
     }
   };

@@ -3,7 +3,7 @@ import axios from 'axios';
 
 export const fetchRegister = createAsyncThunk(
   'user/fetchRegister',
-  async ({ name,email, password }) => {
+  async ({name, email, password}) => {
     console.log('email',email,password);
     try {
       const config = {
@@ -12,15 +12,17 @@ export const fetchRegister = createAsyncThunk(
         },
       };
 
-      const body = JSON.stringify({ name:name,username: email, password });
+      const body = JSON.stringify({ name:name,email:email, password:password });
 
-      const { data } = await axios.post('/api/users/register/', { name:name,username: email, password }, config);
+      const { data } = await axios.post('/api/users/register/', body, config);
       console.log('fetchUser', data);
       return data;
-    } catch (error) {
-      console.error('fetchUser error:', error);
-      throw error;
-    }
+      }catch (error) {
+        console.error('fetchUser error:', error);
+        throw error.response && error.response.data.detail
+      ? error.response.data.detail
+      : error.message;
+      }
   }
 );
 
@@ -36,18 +38,19 @@ export const fetchUser = createAsyncThunk(
         },
       };
 
-      const body = JSON.stringify({ username: email, password });
+      const body = JSON.stringify({ username:email, password:password });
 
       const { data } = await axios.post('/api/users/login/', body, config);
       console.log('fetchUser', data);
       return data;
     } catch (error) {
       console.error('fetchUser error:', error);
-      throw error;
+      throw error.response && error.response.data.detail
+      ? error.response.data.detail
+      : error.message;
     }
   }
 );
-
 const UserSlice=createSlice({
     name:'userLogin',
     initialState:{
@@ -55,36 +58,14 @@ const UserSlice=createSlice({
         ? JSON.parse(localStorage.getItem('userInfo'))
         : null,
         isLoading: false,
+        error: null, 
     },
     reducers:{
       logout:(state)=>{
         state.userInfo=null;
       }
     },
-    // extraReducers: (builder) => {
-    //     builder
-    //       .addCase(fetchUser.pending, (state) => {
-    //         state.isLoading = true;
-    //       })
-    //       .addCase(fetchUser.fulfilled, (state, action) => {
-    //         // // console.log(action);
-    //         state.isLoading = false;
-    //         // state.userInfo.push(action.payload);
-    //         state.userInfo=action.payload;
-            
-    //         localStorage.setItem("userInfo", JSON.stringify(state.userInfo));
-    //       })
-    //       .addCase(fetchUser.rejected, (state, action) => {
-    //         state.isLoading = false;
-    //         state.error = action.error.message; // Store the error message in state if needed
-    //         console.log('fetchUser rejected:', action.error.message);
-      
-    
-    //       });
-    //   },
-    
-    
-    // })
+
     extraReducers: (builder) => {
       builder
         .addCase(fetchUser.pending, (state) => {
@@ -97,8 +78,8 @@ const UserSlice=createSlice({
         })
         .addCase(fetchUser.rejected, (state, action) => {
           state.isLoading = false;
-          state.error = action.error.message;
-          console.log('fetchUser rejected:', action.error.message);
+          console.log(action)
+          state.error=action.error.message;
         })
         .addCase(fetchRegister.pending, (state) => {
           state.isLoading = true;
@@ -110,8 +91,7 @@ const UserSlice=createSlice({
         })
         .addCase(fetchRegister.rejected, (state, action) => {
           state.isLoading = false;
-          state.error = action.error.message;
-          console.log('fetchRegister rejected:', action.error.message);
+          state.error=action.error.message;
         });
     },
   });

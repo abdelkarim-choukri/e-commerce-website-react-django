@@ -20,7 +20,7 @@ function LoginScreen() {
   const location = useLocation();
   const navigate = useNavigate();
   const redirect = location.search ? location.search.split("=")[1] : "/";
-  console.log('userInfo',userInfo)
+ 
   useEffect(() => {
     if (userInfo) {
       console.log('Im in ');
