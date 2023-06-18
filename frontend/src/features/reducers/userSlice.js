@@ -62,12 +62,13 @@ const UserSlice=createSlice({
     },
     reducers:{
       logout:(state)=>{
-        state.userInfo=null;
+        state.userInfo = null;
       }
     },
 
     extraReducers: (builder) => {
       builder
+    // fetch user
         .addCase(fetchUser.pending, (state) => {
           state.isLoading = true;
         })
@@ -81,6 +82,7 @@ const UserSlice=createSlice({
           console.log(action)
           state.error=action.error.message;
         })
+        // register 
         .addCase(fetchRegister.pending, (state) => {
           state.isLoading = true;
         })

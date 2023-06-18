@@ -4,6 +4,7 @@ import productDetailSlice from "./features/reducers/productDetailSlice";
 import cartReducer from "./features/reducers/cartSlice";
 import userReducer from "./features/reducers/userSlice";
 import registerReducer from "./features/reducers/registerSlice";
+import userDetailReducer from "./features/reducers/userDetailSlice";
 
 
 const cartItemsFromStorage = localStorage.getItem("cartItems")
@@ -21,6 +22,7 @@ const store = configureStore({
     cart: cartReducer,
     userLogin: userReducer,
     // userRegister:registerReducer,
+    userDetails:userDetailReducer,
 
   },
   preloadedState: {
