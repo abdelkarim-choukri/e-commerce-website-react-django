@@ -63,6 +63,11 @@ const UserSlice=createSlice({
     reducers:{
       logout:(state)=>{
         state.userInfo = null;
+      },
+      update:(state,action)=>{
+        // const user = JSON.parse(localStorage.getItem('userInfo'));
+        state.userInfo=Object.assign(state.userInfo,action.payload)  ;
+        console.log('update ',state.userInfo)
       }
     },
 
@@ -98,5 +103,5 @@ const UserSlice=createSlice({
     },
   });
 
-export const { logout } = UserSlice.actions;
+export const { logout ,update } = UserSlice.actions;
 export default UserSlice.reducer;

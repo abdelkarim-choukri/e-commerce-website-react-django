@@ -3,9 +3,6 @@ import React, { useState, useEffect } from "react";
 /* REACT BOOTSTRAP */
 import { Row, Col, Button, Form, Table } from "react-bootstrap";
 
-/* REACT ROUTER BOOTSTRAP */
-import { LinkContainer } from "react-router-bootstrap";
-
 /* COMPONENTS */
 import Message from "../components/Message";
 import Loader from "../components/Loader";
@@ -13,66 +10,60 @@ import Loader from "../components/Loader";
 /* REACT - REDUX */
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate, useParams } from 'react-router-dom';
-import { fetchUserDetail } from "../features/reducers/userDetailSlice";
+import { fetchUserDetail, updatUserDetail } from "../features/reducers/userDetailSlice";
+import { fetchUser } from "../features/reducers/userSlice";
+import { update } from '../features/reducers/userSlice';
 
-
-function ProfileScreen({ history }) {
-  /* STATE */
+function ProfileScreen() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
-  const [password, setpassword] = useState("");
+  const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [message, setMessage] = useState("");
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  /* PULLING A PART OF STATE FROM THE ACTUAL STATE IN THE REDUX STORE */
-  const { user, loading, error }  = useSelector((state) => state.userDetails);
-  const {userInfo} = useSelector((state) => state.userLogin);
+  const { user, loading, error, success } = useSelector((state) => state.userDetails);
+  const { userInfo } = useSelector((state) => state.userLogin);
+
 
 
   useEffect(() => {
-    // USER IS NOT LOGGED IN
     if (!userInfo) {
-      navigate(`/login`);
+      navigate("/login");
     } else {
-      // WE DON'T HAVE THE USER INFO SO WE DISPATCH AN ACTION TO GET THE DATA
-      if (!user || !user.name ) {
-        /* (userInfo._id !== user._id) BECAUSE DURING USER EDIT STATE CHANGES SO WE WANT TO FIRE DISPATCH AGAIN HERE IF THE DATA ISN'T SAME AS THE USER AS WE ARE LOGGED IN  */
-       
-
-        // FETCHING USER DATA
+      if (!user || !user.name || success || userInfo._id !== user._id) {
         dispatch(fetchUserDetail({ id: "profile" }));
-      } else {
-        // WE HAVE THE USER INFO SO WE SET OUR STATE
-        setName(user.name);
-        setEmail(user.email);
+        setName(userInfo.name);
+        setEmail(userInfo.email);
       }
+      
     }
-  }, [dispatch,userInfo, user]);
-//   const { user, loading, error } = userDetails;
+  }, [success,userInfo]);
 
-  /* WE NEED TO MAKE SURE USER IS LOGGED IN SO PULLING OUT USER LOGIN INFO */
-  
   const submitHandler = (e) => {
-//     e.preventDefault();
+    e.preventDefault();
 
-//     /* DISABLE SUBMIT IF PASSWORDS DON'T MATCH */
-//     if (password !== confirmPassword) {
-//       setMessage("Passwords do not match");
-//     } else {
-//       dispatch(
-//         updateUserProfile({
-//           id: user._id,
-//           name: name,
-//           email: email,
-//           password: password,
-//         })
-//       );
-//       setMessage("");
-//     }
-};
+    if (password !== confirmPassword) {
+      setMessage("Passwords do not match");
+    } else {
+      dispatch(
+        updatUserDetail({
+          name: name,
+          email: email,
+          password: password,
+        })
+      );
+      setMessage("");
+ 
+    }
+  };
 
+  useEffect( ()=>{
+    console.log(success);
+    if (success){dispatch(update(user))}
+  },[user])
+  
   return (
     <Row>
       <Col md={3}>
@@ -111,7 +102,7 @@ function ProfileScreen({ history }) {
               type="password"
               placeholder="Enter Password"
               value={password}
-              onChange={(e) => setpassword(e.target.value)}
+              onChange={(e) => setPassword(e.target.value)}
             />
           </Form.Group>
 
@@ -133,50 +124,7 @@ function ProfileScreen({ history }) {
 
       <Col md={9}>
         <h2>My Orders</h2>
-
-        {/* {loadingOrders ? (
-          <Loader />
-        ) : errorOrders ? (
-          <Message variant="danger">{errorOrders}</Message>
-        ) : (
-          <Table striped responsive className="table-sm">
-            <thead>
-              <tr>
-                <th>ID</th>
-                <th>Date</th>
-                <th>Total</th>
-                <th>Paid</th>
-                <th>Delivered</th>
-              </tr>
-            </thead>
-
-            <tbody>
-              {orders.map((order) => (
-                <tr key={order._id}>
-                  <td>{order._id}</td>
-                  <td>
-                    {order.createdAt ? order.createdAt.substring(0, 10) : null}
-                  </td>
-                  <td>${order.totalPrice}</td>
-                  <td>
-                    {order.isPaid ? (
-                      order.paidAt ? (
-                        order.paidAt.substring(0, 10)
-                      ) : null
-                    ) : (
-                      <i className="fas fa-times" style={{ color: "red" }}></i>
-                    )}
-                  </td>
-                  <td>
-                    <LinkContainer to={`/order/${order._id}`}>
-                      <Button className="btn-sm">Details</Button>
-                    </LinkContainer>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </Table>
-        )} */}
+        {/* Your code for displaying orders */}
       </Col>
     </Row>
   );
