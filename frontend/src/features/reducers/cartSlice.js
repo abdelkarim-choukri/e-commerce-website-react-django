@@ -25,8 +25,10 @@ export const fetchCartItems  = createAsyncThunk(
 
 const initialState={
   cartItems:[],//JSON.parse(localStorage.getItem('cartItems')) || [],
-  newCart:{},
+  // newCart:{},
   // isLoading: false,
+  shippingAddress:{},
+  paymentMethod:'',
 };
 const cartSlice=createSlice({
 name:'cart',
@@ -48,6 +50,16 @@ removeFromCart:(state,action)=>{
     const productId = action.payload;
     state.cartItems = state.cartItems.filter((x) => x.product !== productId);
     localStorage.setItem('cartItems', JSON.stringify(state.cartItems));
+},
+saveShippingAddress:(state,action)=>{
+  state.shippingAddress = action.payload;
+  console.log(state.shippingAddress)
+  localStorage.setItem('shippingAddress', JSON.stringify(state.shippingAddress));
+},
+savePaymentMethod:(state,action)=>{
+  state.paymentMethod = action.payload;
+  console.log(state.paymentMethod)
+  localStorage.setItem('paymentMethod', JSON.stringify(state.paymentMethod));
 },
 },
 extraReducers: (builder) => {
@@ -89,7 +101,7 @@ extraReducers: (builder) => {
 
 
 
-export const { addToCart, removeFromCart } = cartSlice.actions;
+export const { addToCart, removeFromCart ,saveShippingAddress,savePaymentMethod} = cartSlice.actions;
 
 export default cartSlice.reducer;
 

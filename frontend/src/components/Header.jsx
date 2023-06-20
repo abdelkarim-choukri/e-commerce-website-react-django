@@ -31,7 +31,7 @@ function Header() {
           <Navbar.Brand href="/">SOUPERSHOPE</Navbar.Brand>
           <Nav className="me-auto">
             <NavLink href="/card">
-              <i className="fas fa-shopping-cart"></i> Card
+              <i className="fas fa-shopping-cart"></i> Cart
             </NavLink>
 
             {userInfo ? (
