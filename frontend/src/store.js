@@ -32,6 +32,7 @@ const store = configureStore({
     cart: {
       cartItems: cartItemsFromStorage,
       shippingAddress:shippingAddressFromStorage,
+      paymentMethod: localStorage.getItem('paymentMethod') || '', 
     },
     userLogin:{
       userInfo:userInfoFromStorage,

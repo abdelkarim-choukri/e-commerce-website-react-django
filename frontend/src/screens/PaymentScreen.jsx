@@ -39,6 +39,7 @@ function PaymentScreen({ history }) {
               name="paymentMethod"
               checked
               onChange={(e) => setPaymentMethod(e.target.value)}
+              value="PayPal"
             ></Form.Check>
           </Col>
         </Form.Group>
