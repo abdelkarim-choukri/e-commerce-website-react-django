@@ -1,16 +1,27 @@
 import React, { useEffect } from 'react';
 import CheckoutSteps from '../components/CheckoutSteps';
 import { Col, Container, Row } from 'react-bootstrap';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 import Message from '../components/Message';
 import { Button, ListGroup, Image, Card } from 'react-bootstrap';
-
+import  {fetchOrderCreate,orderReset}  from '../features/reducers/orderCreateSlice';
+import {removeCart} from '../features/reducers/cartSlice';
 function PlaceOrderScreen() {
+  const dispatch =useDispatch();
   const navigate = useNavigate();
   const cart = useSelector((state) => state.cart);
+  const { order, error, success } = useSelector((state) => state.orderCreate);
+
   console.log(cart.paymentMethod);
+
+  useEffect(() => {
+    if (success) {
+      dispatch(orderReset())
+      dispatch(removeCart())
+      navigate(`/order/${order._id}`);}
+  }, [success]);
 
   useEffect(() => {
     if (!cart.paymentMethod) {
@@ -18,17 +29,14 @@ function PlaceOrderScreen() {
     }
   }, []);
 
-  const placeOrder = () => {
-    console.log('order');
-  };
-
+  
   const calculateItemsPrice = () => {
     return cart.cartItems.reduce(
       (acc, item) => acc + item.price * item.qty,
       0
-    );
-  };
-
+      );
+    };
+    
   const itemsPrice = calculateItemsPrice().toFixed(2);
   const shippingPrice = (itemsPrice > 100 ? 0 : 10).toFixed(2);
   const taxPrice = (0.082 * itemsPrice).toFixed(2);
@@ -38,6 +46,29 @@ function PlaceOrderScreen() {
     Number(taxPrice)
   ).toFixed(2);
   console.log(itemsPrice,shippingPrice,taxPrice);
+
+  const placeOrder = () => {
+    console.log('cartItems:', cart.cartItems);
+    console.log('shippingAddress:', cart.shippingAddress);
+    console.log('paymentMethod:', cart.paymentMethod);
+    console.log('itemsPrice:', itemsPrice);
+    console.log('shippingPrice:', shippingPrice);
+    console.log('taxPrice:', taxPrice);
+    console.log('totalPrice:', totalPrice);
+    
+    const order = {
+      orderItems: cart.cartItems,
+      shippingAddress: cart.shippingAddress,
+      paymentMethod: cart.paymentMethod,
+      itemsPrice: itemsPrice,
+      shippingPrice: shippingPrice,
+      taxPrice: taxPrice,
+      totalPrice: totalPrice,
+    };
+    console.log('in screen',order)
+    dispatch(fetchOrderCreate( {order} )); // Pass the order object as an argument
+  };
+    
 
   return (
     <div>
@@ -127,7 +158,7 @@ function PlaceOrderScreen() {
                 </ListGroup.Item>
 
                 <ListGroup.Item>
-                  {/* {error && <Message variant="danger">{error}</Message>} */}
+                  {error && <Message variant="danger">{error}</Message>}
                 </ListGroup.Item>
 
                 <ListGroup.Item>

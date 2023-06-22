@@ -44,6 +44,11 @@ addToCart: (state, action) => {
 localStorage.setItem('cartItems', JSON.stringify(state.cartItems));
 
 },
+removeCart:(state,action)=>{
+  
+  state.cartItems =[];
+  localStorage.removeItem('cartItems');
+},
 removeFromCart:(state,action)=>{
     const productId = action.payload;
     state.cartItems = state.cartItems.filter((x) => x.product !== productId);
@@ -100,7 +105,7 @@ extraReducers: (builder) => {
 
 
 
-export const { addToCart, removeFromCart ,saveShippingAddress,savePaymentMethod} = cartSlice.actions;
+export const { addToCart, removeFromCart ,saveShippingAddress,savePaymentMethod,removeCart} = cartSlice.actions;
 
 export default cartSlice.reducer;
 
