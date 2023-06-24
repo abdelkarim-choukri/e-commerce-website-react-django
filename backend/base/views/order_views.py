@@ -73,50 +73,50 @@ def addOrderItems(request):
     return Response(serializer.data)
 
 
-# @api_view(['GET'])
-# @permission_classes([IsAuthenticated])
-# def getMyOrders(request):
-#     user = request.user
-#     orders = user.order_set.all()
-#     serializer = OrderSerializer(orders, many=True)
-#     return Response(serializer.data)
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def getMyOrders(request):
+    user = request.user
+    orders = user.order_set.all()
+    serializer = OrderSerializer(orders, many=True)
+    return Response(serializer.data)
 
 
-# @api_view(['GET'])
-# @permission_classes([IsAdminUser])
-# def getOrders(request):
-#     orders = Order.objects.all()
-#     serializer = OrderSerializer(orders, many=True)
-#     return Response(serializer.data)
+@api_view(['GET'])
+@permission_classes([IsAdminUser])
+def getOrders(request):
+    orders = Order.objects.all()
+    serializer = OrderSerializer(orders, many=True)
+    return Response(serializer.data)
 
 
-# @api_view(['GET'])
-# @permission_classes([IsAuthenticated])
-# def getOrderById(request, pk):
-#     order = get_object_or_404(Order, _id=pk)
-#     if request.user.is_staff or order.user == request.user:
-#         serializer = OrderSerializer(order, many=False)
-#         return Response(serializer.data)
-#     else:
-#         return Response({'detail': 'Not Authorized to view this order'},
-#                         status=status.HTTP_400_BAD_REQUEST)
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def getOrderById(request, pk):
+    order = get_object_or_404(Order, _id=pk)
+    if request.user.is_staff or order.user == request.user:
+        serializer = OrderSerializer(order, many=False)
+        return Response(serializer.data)
+    else:
+        return Response({'detail': 'Not Authorized to view this order'},
+                        status=status.HTTP_400_BAD_REQUEST)
 
 
-# @api_view(['PUT'])
-# @permission_classes([IsAuthenticated])
-# def updateOrderToPaid(request, pk):
-#     order = get_object_or_404(Order, _id=pk)
-#     order.isPaid = True
-#     order.paidAt = datetime.now()
-#     order.save()
-#     return Response('Order was paid')
+@api_view(['PUT'])
+@permission_classes([IsAuthenticated])
+def updateOrderToPaid(request, pk):
+    order = get_object_or_404(Order, _id=pk)
+    order.isPaid = True
+    order.paidAt = datetime.now()
+    order.save()
+    return Response('Order was paid')
 
 
-# @api_view(['PUT'])
-# @permission_classes([IsAdminUser])
-# def updateOrderToDelivered(request, pk):
-#     order = get_object_or_404(Order, _id=pk)
-#     order.isDeliver = True
-#     order.deliveredAt = datetime.now()
-#     order.save()
-#     return Response('Order was Delivered')
+@api_view(['PUT'])
+@permission_classes([IsAdminUser])
+def updateOrderToDelivered(request, pk):
+    order = get_object_or_404(Order, _id=pk)
+    order.isDeliver = True
+    order.deliveredAt = datetime.now()
+    order.save()
+    return Response('Order was Delivered')

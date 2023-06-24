@@ -18,7 +18,7 @@ function PlaceOrderScreen() {
 
   useEffect(() => {
     if (success) {
-      dispatch(orderReset())
+      // dispatch(orderReset())
       dispatch(removeCart())
       navigate(`/order/${order._id}`);}
   }, [success]);

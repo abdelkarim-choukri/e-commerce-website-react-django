@@ -30,9 +30,9 @@ function Header() {
         <Container>
           <Navbar.Brand href="/">SOUPERSHOPE</Navbar.Brand>
           <Nav className="me-auto">
-            <NavLink href="/card">
-              <i className="fas fa-shopping-cart"></i> Cart
-            </NavLink>
+          <NavLink href={userInfo ? `/cart/${userInfo.id}` : "/login"}>
+            <i className="fas fa-shopping-cart"></i> Cart
+            </NavLink>  
 
             {userInfo ? (
                 <NavDropdown title={userInfo.name} id="username">

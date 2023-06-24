@@ -30,6 +30,9 @@ export const fetchOrderCreate = createAsyncThunk(
   }
 );
 
+
+
+
 const orderCreateSlice = createSlice({
   name: 'orderCreate',
   initialState: {
@@ -60,7 +63,8 @@ const orderCreateSlice = createSlice({
           ? action.error.response.data.detail
           : action.error.message;
         console.log('fetchOrderCreate rejected:', action.error.message);
-      });
+      })
+      
   },
 });
 
