@@ -1,59 +1,134 @@
 import React, { useState, useEffect } from "react";
-
-/* REACT ROUTER */
 import { Link, useParams } from "react-router-dom";
-
-/* REACT BOOTSTRAP */
 import { Row, Col, ListGroup, Image, Card, Button } from "react-bootstrap";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchOrderDetail } from "../features/reducers/orderDetailSlice";
+import { fetchpayOrder } from "../features/reducers/orderPaySlice";
+import { PayPalScriptProvider, PayPalButtons, usePayPalScriptReducer } from "@paypal/react-paypal-js";
 
-/* PAYPAL BUTTONS */
-// import { PayPalButton } from "react-paypal-button-v2";
-
-/* COMPONENTS */
 import Message from "../components/Message";
 import Loader from "../components/Loader";
 
-/* REACT - REDUX */
-import { useDispatch, useSelector } from "react-redux";
-import { fetchOrderDetail } from "../features/reducers/orderDetailSlice";
+const style = {"layout":"vertical"};
+
+const ButtonWrapper = ({ currency, showSpinner }) => {
+  // usePayPalScriptReducer can be use only inside children of PayPalScriptProviders
+  // This is the main reason to wrap the PayPalButtons in a new component
+  const [{ options, isPending }, dispatch] = usePayPalScriptReducer();
+  const { orderDetail, error, success, loading } = useSelector(
+    (state) => state.orderDetail
+  );
+  const amount = orderDetail.totalPrice;
+  const { loading: loadingPay, success: successPay } = useSelector(
+    (state) => state.orderPay
+  );
+  useEffect(() => {
+      dispatch({
+          type: "resetOptions",
+          value: {
+              ...options,
+              currency: currency,
+          },
+      });
+  }, [currency, showSpinner]);
+
+
+  return (<>
+          { (showSpinner && isPending) && <div className="spinner" /> }
+          <PayPalButtons
+              style={style}
+              disabled={false}
+              forceReRender={[amount, currency, style]}
+              fundingSource={undefined}
+              createOrder={(data, actions) => {
+                  return actions.order
+                      .create({
+                          purchase_units: [
+                              {
+                                  amount: {
+                                      currency_code: currency,
+                                      value: orderDetail.totalPrice,
+                                  },
+                              },
+                          ],
+                      })
+                   
+              }}
+      
+          />
+      </>
+  );
+}
+
+
+
+
+
+
+
+
+
 
 
 
 
 function OrderScreen({ history, match }) {
-  
   const { id } = useParams();
-//   const id = id;
-console.log(id);
+
   const dispatch = useDispatch();
 
   const [sdkReady, setSdkReady] = useState(false);
 
-  
   const userLogin = useSelector((state) => state.userLogin);
   const { userInfo } = userLogin;
-  const { orderDetail, error, success,loading } = useSelector((state) => state.orderDetail);
-  // ITEMS PRICE GETS CALCULATED ONLY IF WE HAVE AN ORDER
+  const { orderDetail, error, success, loading } = useSelector(
+    (state) => state.orderDetail
+  );
+
+  const { loading: loadingPay, success: successPay } = useSelector(
+    (state) => state.orderPay
+  );
+
+  
+
   let itemsPrice = 0;
-  if ( orderDetail && orderDetail.orderItems) {
+  if (orderDetail && orderDetail.orderItems) {
     itemsPrice = orderDetail.orderItems
       .reduce((acc, item) => acc + item.price * item.qty, 0)
       .toFixed(2);
   }
+  console.log("order is Payed", orderDetail.isPaid);
+  console.log("orderDetail", orderDetail.orderItems);
+
+  const clientId = "ARkDDzya47PjpEnWCsv_OPZerYI4Pghe7q8-CMQtlkg7PKsnRX9d2EcjZpfCC--KO1WB08nvFRiBvg0j";
+  
+  // const addPayPalScript = () => {
+  //   const script = document.createElement("script");
+  //   script.type = "text/javascript";
+  //   script.src =
+  //     "https://www.paypal.com/sdk/js?client-id=ARkDDzya47PjpEnWCsv_OPZerYI4Pghe7q8-CMQtlkg7PKsnRX9d2EcjZpfCC--KO1WB08nvFRiBvg0j";
+  //   script.async = true;
+  //   script.onload = () => {
+  //     dispatch(fetchOrderDetail(id));
+  //     setSdkReady(true);
+  //   };
+  //   document.body.appendChild(script);
+  // };
 
   useEffect(() => {
-    // CHECK IF WE HAVE THE ORDER DETAILS, IF NOT DISPATCH AN ACTION TO GET THE ORDER DETAILS
-    if (orderDetail ) {
-        console.log('in useEffect')
+    if (orderDetail) {
+      console.log("in useEffect");
       dispatch(fetchOrderDetail(id));
-      
-
+    } else if (orderDetail && !orderDetail.isPaid) {
+      setSdkReady(true);
     }
   }, [dispatch, id]);
-console.log('orderDetail',orderDetail.orderItems);
-
-
-
+  
+  const successPaymentHandler = (paymentResult) => {
+    dispatch(fetchpayOrder(id, paymentResult));
+  };
+  console.log(orderDetail.totalPrice);
+  const amount = orderDetail.totalPrice;
   return loading ? (
     <Loader />
   ) : error ? (
@@ -187,6 +262,29 @@ console.log('orderDetail',orderDetail.orderItems);
                   <Col>₹{orderDetail.totalPrice}</Col>
                 </Row>
               </ListGroup.Item>
+
+              {!orderDetail.isPaid && (
+                <ListGroup.Item>
+                  {loadingPay && <Loader />}
+                  {sdkReady ? (
+                    <Loader />
+                  ) : (
+                    <PayPalScriptProvider
+                options={{
+                    "clientId":"ARkDDzya47PjpEnWCsv_OPZerYI4Pghe7q8-CMQtlkg7PKsnRX9d2EcjZpfCC--KO1WB08nvFRiBvg0j",
+                    components: "buttons",
+                    currency: "USD"
+                }}
+            >
+				<ButtonWrapper
+                    currency="USD"
+                    showSpinner={false}
+                />
+			</PayPalScriptProvider>
+                    
+                  )}
+                </ListGroup.Item>
+                )}
 
            
               
