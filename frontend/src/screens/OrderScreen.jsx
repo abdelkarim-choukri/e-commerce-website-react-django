@@ -12,14 +12,14 @@ import Loader from "../components/Loader";
 const style = {"layout":"vertical"};
 
 const ButtonWrapper = ({ currency, showSpinner }) => {
-  // usePayPalScriptReducer can be use only inside children of PayPalScriptProviders
-  // This is the main reason to wrap the PayPalButtons in a new component
-  const [{ options, isPending }, dispatch] = usePayPalScriptReducer();
+  const { id } = useParams();
+  const dispatch = useDispatch();
+  const [{ options, isPending }] = usePayPalScriptReducer();
   const { orderDetail, error, success, loading } = useSelector(
     (state) => state.orderDetail
   );
   const amount = orderDetail.totalPrice;
-  const { loading: loadingPay, success: successPay } = useSelector(
+  const { loadingPay, successPay } = useSelector(
     (state) => state.orderPay
   );
   useEffect(() => {
@@ -31,7 +31,11 @@ const ButtonWrapper = ({ currency, showSpinner }) => {
           },
       });
   }, [currency, showSpinner]);
-
+  
+  const successPaymentHandler = () => {
+    dispatch(fetchpayOrder({id}));
+    alert('You have successfully paid for your order');
+  };
 
   return (<>
           { (showSpinner && isPending) && <div className="spinner" /> }
@@ -52,39 +56,22 @@ const ButtonWrapper = ({ currency, showSpinner }) => {
                               },
                           ],
                       })
+                      
                    
               }}
+              onApprove={data => {successPaymentHandler(data);}}
       
           />
       </>
   );
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
 function OrderScreen({ history, match }) {
   const { id } = useParams();
-
   const dispatch = useDispatch();
-
   const [sdkReady, setSdkReady] = useState(false);
-
-  const userLogin = useSelector((state) => state.userLogin);
-  const { userInfo } = userLogin;
-  const { orderDetail, error, success, loading } = useSelector(
-    (state) => state.orderDetail
-  );
-
+  const { userInfo } = useSelector((state) => state.userLogin);
+  const { orderDetail, error, success, loading } = useSelector((state) => state.orderDetail);
   const { loading: loadingPay, success: successPay } = useSelector(
     (state) => state.orderPay
   );
@@ -102,18 +89,7 @@ function OrderScreen({ history, match }) {
 
   const clientId = "ARkDDzya47PjpEnWCsv_OPZerYI4Pghe7q8-CMQtlkg7PKsnRX9d2EcjZpfCC--KO1WB08nvFRiBvg0j";
   
-  // const addPayPalScript = () => {
-  //   const script = document.createElement("script");
-  //   script.type = "text/javascript";
-  //   script.src =
-  //     "https://www.paypal.com/sdk/js?client-id=ARkDDzya47PjpEnWCsv_OPZerYI4Pghe7q8-CMQtlkg7PKsnRX9d2EcjZpfCC--KO1WB08nvFRiBvg0j";
-  //   script.async = true;
-  //   script.onload = () => {
-  //     dispatch(fetchOrderDetail(id));
-  //     setSdkReady(true);
-  //   };
-  //   document.body.appendChild(script);
-  // };
+  
 
   useEffect(() => {
     if (orderDetail) {
@@ -122,13 +98,17 @@ function OrderScreen({ history, match }) {
     } else if (orderDetail && !orderDetail.isPaid) {
       setSdkReady(true);
     }
-  }, [dispatch, id]);
+  }, [dispatch, id,orderDetail.isPaid]);
   
+
   const successPaymentHandler = (paymentResult) => {
     dispatch(fetchpayOrder(id, paymentResult));
   };
+
   console.log(orderDetail.totalPrice);
   const amount = orderDetail.totalPrice;
+  
+  
   return loading ? (
     <Loader />
   ) : error ? (
@@ -212,7 +192,7 @@ function OrderScreen({ history, match }) {
                         </Col>
 
                         <Col md={4}>
-                          {item.qty} X ₹{item.price} = ₹
+                          {item.qty} X ${item.price} = $
                           {(item.qty * item.price)}
                         </Col>
                       </Row>
@@ -235,7 +215,7 @@ function OrderScreen({ history, match }) {
                 <Row>
                   <Col>Items:</Col>
 
-                  <Col>₹{itemsPrice}</Col>
+                  <Col>${itemsPrice}</Col>
                 </Row>
               </ListGroup.Item>
 
@@ -243,7 +223,7 @@ function OrderScreen({ history, match }) {
                 <Row>
                   <Col>Shipping:</Col>
 
-                  <Col>₹{orderDetail.shippingPrice}</Col>
+                  <Col>${orderDetail.shippingPrice}</Col>
                 </Row>
               </ListGroup.Item>
 
@@ -251,7 +231,7 @@ function OrderScreen({ history, match }) {
                 <Row>
                   <Col>Tax:</Col>
 
-                  <Col>₹{orderDetail.taxPrice}</Col>
+                  <Col>${orderDetail.taxPrice}</Col>
                 </Row>
               </ListGroup.Item>
 
@@ -259,7 +239,7 @@ function OrderScreen({ history, match }) {
                 <Row>
                   <Col>Total:</Col>
 
-                  <Col>₹{orderDetail.totalPrice}</Col>
+                  <Col>${orderDetail.totalPrice}</Col>
                 </Row>
               </ListGroup.Item>
 
@@ -297,7 +277,7 @@ function OrderScreen({ history, match }) {
                 <Button
                   type="button"
                   className="btn w-100"
-                  onClick={deliverHandler}
+                  // onClick={deliverHandler}
                 >
                   Mark As Delivered
                 </Button>

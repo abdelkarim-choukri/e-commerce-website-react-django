@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "@paypal/react-paypal-js": "^8.0.0",
     "git": "^0.1.5"
   }
 }

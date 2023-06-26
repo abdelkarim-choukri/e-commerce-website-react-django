@@ -6,7 +6,7 @@ import axios from 'axios';
 
 export const fetchpayOrder = createAsyncThunk(
   'orderPay/fetchpayOrder',
-  async (id,paymentResult, { getState } ) => {
+  async ({id},{ getState } ) => {
     console.log('id', id);
     try {
       const {
@@ -19,8 +19,11 @@ export const fetchpayOrder = createAsyncThunk(
           Authorization: `Bearer ${userInfo.token}`,
         },
       };
-
-      const { data } = await axios.put(`/api/orders/${id}/pay`, paymentResult,config);
+      console.log(`Bearer ${userInfo.token}`)
+      console.log('config',config)
+      console.log('url',`/api/orders/${id}/pay/`)
+      // console.log('paymentResult',paymentResult)
+      const { data } = await axios.put(`/api/orders/${id}/pay/`, null,config);
       console.log('fetchorderpay', data);
       return data;
     } catch (error) {
@@ -47,7 +50,7 @@ const orderPaySlice = createSlice({
       .addCase(fetchpayOrder.fulfilled, (state, action) => {
         state.Loading = false;
         state.success = true;
-
+        console.log('fetchpayOrder',state.success);
       })
       .addCase(fetchpayOrder.rejected, (state, action) => {
         state.Loading = false;

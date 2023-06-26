@@ -57,7 +57,7 @@ const orderDetailSlice = createSlice({
 
         console.log('state.order', state.orderDetail);
 
-        localStorage.setItem('order', JSON.stringify(state.orderDetail));
+        localStorage.setItem('orderDetail', JSON.stringify(state.orderDetail));
       })
       .addCase(fetchOrderDetail.rejected, (state, action) => {
         state.isLoading = false;
