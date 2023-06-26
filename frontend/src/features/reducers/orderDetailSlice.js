@@ -42,7 +42,7 @@ const orderDetailSlice = createSlice({
   },
   reducers: {
     orderReset:(state)=>{
-      state.order = {};
+      state.orderDetail = {};
     },
   },
   extraReducers: (builder) => {

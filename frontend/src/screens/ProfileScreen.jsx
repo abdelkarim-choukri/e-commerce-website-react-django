@@ -13,6 +13,7 @@ import { Link, useNavigate, useParams } from 'react-router-dom';
 import { fetchUserDetail, updatUserDetail } from "../features/reducers/userDetailSlice";
 import { fetchUser } from "../features/reducers/userSlice";
 import { update } from '../features/reducers/userSlice';
+import { listMyOrders } from "../features/reducers/orderslistSlice";
 
 function ProfileScreen() {
   const [name, setName] = useState("");
@@ -25,7 +26,7 @@ function ProfileScreen() {
   const navigate = useNavigate();
   const { user, loading, error, success } = useSelector((state) => state.userDetails);
   const { userInfo } = useSelector((state) => state.userLogin);
-
+  const { isLoading ,error:listError,ordersList}=useSelector((state)=>state.ordersList);
 
 
   useEffect(() => {
@@ -34,6 +35,7 @@ function ProfileScreen() {
     } else {
       if (!user || !user.name || success || userInfo._id !== user._id) {
         dispatch(fetchUserDetail({ id: "profile" }));
+        dispatch(listMyOrders())
         setName(userInfo.name);
         setEmail(userInfo.email);
       }
@@ -66,13 +68,11 @@ function ProfileScreen() {
   
   return (
     <Row>
-      <Col md={3}>
+      <Col md={4}>
         <h2>User Profile</h2>
-
         {message && <Message variant="danger">{message}</Message>}
         {error && <Message variant="danger">{error}</Message>}
         {loading && <Loader />}
-
         <Form onSubmit={submitHandler}>
           <Form.Group controlId="name">
             <Form.Label>Name</Form.Label>
@@ -84,7 +84,6 @@ function ProfileScreen() {
               onChange={(e) => setName(e.target.value)}
             />
           </Form.Group>
-
           <Form.Group controlId="email">
             <Form.Label>Email Address</Form.Label>
             <Form.Control
@@ -95,7 +94,6 @@ function ProfileScreen() {
               onChange={(e) => setEmail(e.target.value)}
             />
           </Form.Group>
-
           <Form.Group controlId="password">
             <Form.Label>Password</Form.Label>
             <Form.Control
@@ -105,7 +103,6 @@ function ProfileScreen() {
               onChange={(e) => setPassword(e.target.value)}
             />
           </Form.Group>
-
           <Form.Group controlId="passwordConfirm">
             <Form.Label>Confirm Password</Form.Label>
             <Form.Control
@@ -115,16 +112,53 @@ function ProfileScreen() {
               onChange={(e) => setConfirmPassword(e.target.value)}
             />
           </Form.Group>
-
           <Button type="submit" variant="primary" className="mt-3">
             Update
           </Button>
         </Form>
       </Col>
 
-      <Col md={9}>
+      <Col md={8}>
         <h2>My Orders</h2>
-        {/* Your code for displaying orders */}
+        {isLoading ? (
+          <Loader />
+        ) : listError ? (
+          <Message variant="danger">{listError}</Message>
+        ) : (
+          <Table striped responsive className="table-sm">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Date</th>
+                <th>Total</th>
+                <th>Paid</th>
+                <th>Delivered</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              {ordersList.map((order) => (
+                <tr key={order._id}>
+                  <td>{order._id}</td>
+                  <td>{order.createAt}</td>
+                  <td>${order.totalPrice}</td>
+                  <td>
+                    {order.isPaid ? (
+                      order.paidAt.substring(0, 10)
+                    ) : (
+                      <i className="fas fa-times" style={{ color: "red" }}></i>
+                    )}
+                  </td>
+                  <td>
+                    <Link to={`/order/${order._id}`}>
+                      <Button className="btn sm">Details</Button>
+                    </Link>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </Table>
+        )}
       </Col>
     </Row>
   );

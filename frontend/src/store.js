@@ -8,6 +8,7 @@ import userDetailReducer from "./features/reducers/userDetailSlice";
 import orderCreateReducer from "./features/reducers/orderCreateSlice";
 import orderDetailReducer from "./features/reducers/orderDetailSlice";
 import orderPayReducer from "./features/reducers/orderPaySlice";
+import orderslistReducer from "./features/reducers/orderslistSlice";
 
 
 const cartItemsFromStorage = localStorage.getItem("cartItems")
@@ -33,6 +34,7 @@ const store = configureStore({
     orderCreate: orderCreateReducer,
     orderDetail: orderDetailReducer,
     orderPay: orderPayReducer,
+    ordersList: orderslistReducer,
   },
   preloadedState: {
     cart: {

@@ -3,13 +3,15 @@ import { NavLink } from 'react-bootstrap';
 import Container from 'react-bootstrap/Container';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import NavDropdown from 'react-bootstrap/NavDropdown';
 import { logout } from '../features/reducers/userSlice';
 
 import '../App.css';
 import { useDispatch, useSelector } from "react-redux";
 import { LinkContainer } from 'react-router-bootstrap'; 
+import { orderReset } from '../features/reducers/orderDetailSlice';
+import { ordersListReset } from '../features/reducers/orderslistSlice';
 
 
 
@@ -18,11 +20,15 @@ function Header() {
     const  {userInfo}  = useSelector((state) => state.userLogin);
 
     const dispatch = useDispatch();
+    const navigate =useNavigate()
   // console.log('name',userInfo.name);// redo 1 object machi array of object 
   
     const logoutHandler = () => {
-      localStorage.removeItem('userInfo');
+      localStorage.clear();
       dispatch(logout());
+      dispatch(orderReset());
+      dispatch(ordersListReset());
+      navigate('/')
     };
   return (
     <>

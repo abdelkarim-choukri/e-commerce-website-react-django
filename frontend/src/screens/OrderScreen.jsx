@@ -98,7 +98,7 @@ function OrderScreen({ history, match }) {
     } else if (orderDetail && !orderDetail.isPaid) {
       setSdkReady(true);
     }
-  }, [dispatch, id,orderDetail.isPaid]);
+  }, [dispatch, id,successPay]);
   
 
   const successPaymentHandler = (paymentResult) => {
@@ -176,7 +176,7 @@ function OrderScreen({ history, match }) {
                   {orderDetail.orderItems.map((item, index) => (
                     <ListGroup.Item key={index}>
                       <Row>
-                        <Col md={1}>
+                        <Col md={2} sm={2} xs={3}>
                           <Image
                             src={item.image}
                             alt={item.name}
@@ -186,7 +186,7 @@ function OrderScreen({ history, match }) {
                         </Col>
 
                         <Col>
-                          <Link to={`/product${item.product}`}>
+                          <Link to={`/product/${item.product}`}>
                             {item.name}
                           </Link>
                         </Col>
