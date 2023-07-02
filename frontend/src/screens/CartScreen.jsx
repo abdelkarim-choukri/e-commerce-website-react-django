@@ -5,13 +5,12 @@ import { useDispatch, useSelector } from 'react-redux';
 import { addToCart, fetchCartItems, removeFromCart } from '../features/reducers/cartSlice';
 import Message from '../components/Message';
 
-
 const CartScreen = () => {
   const { id } = useParams();
   const location = useLocation();
   const qty = location.search ? Number(location.search.split('=')[1]) : 1;
   const dispatch = useDispatch();
-  const navigator=useNavigate()
+  const navigator = useNavigate();
 
   useEffect(() => {
     if (id) {
@@ -25,9 +24,10 @@ const CartScreen = () => {
   const removeFromCartHandler = (id) => {
     dispatch(removeFromCart(id));
   };
-  const checkoutHandler=()=>{
+
+  const checkoutHandler = () => {
     navigator(`/shipping`);
-  }
+  };
 
   return (
     <Row>
@@ -46,37 +46,40 @@ const CartScreen = () => {
                     <Image src={item.image} alt={item.name} fluid rounded />
                   </Col>
 
-                  <Col xs={8} sm={6} md={3}>
-                    <Link to={`/product/${item.product}`}>{item.name}</Link>
-                  </Col>
-
-                  <Col xs={4} sm={3} md={2}>${item.price}</Col>
-
-                  <Col xs={8} sm={6} md={3}>
-                    <Form.Select
-                      value={item.qty}
-                      onChange={(e) =>
-                        dispatch(
-                          addToCart({ id: item.product, newQty: Number(e.target.value) })
-                        )
-                      }
-                    >
-                      {[...Array(item.countInStock).keys()].map((x) => (
-                        <option key={x + 1} value={x + 1}>
-                          {x + 1}
-                        </option>
-                      ))}
-                    </Form.Select>
-                  </Col>
-
-                  <Col xs={4} sm={3} md={1}>
-                    <Button
-                      type="button"
-                      variant="light"
-                      onClick={() => removeFromCartHandler(item.product)}
-                    >
-                      <i className="fas fa-trash"></i>
-                    </Button>
+                  <Col xs={8} sm={9} md={10}>
+                    <Row>
+                      <Col xs={12} md={6}>
+                        <Link to={`/product/${item.product}`}>{item.name}</Link>
+                      </Col>
+                      <Col xs={6} md={3}>
+                        <strong>${item.price}</strong>
+                      </Col>
+                      <Col xs={6} md={3}>
+                        <Form.Select
+                          value={item.qty}
+                          onChange={(e) =>
+                            dispatch(
+                              addToCart({ id: item.product, newQty: Number(e.target.value) })
+                            )
+                          }
+                        >
+                          {[...Array(item.countInStock).keys()].map((x) => (
+                            <option key={x + 1} value={x + 1}>
+                              {x + 1}
+                            </option>
+                          ))}
+                        </Form.Select>
+                      </Col>
+                      <Col xs={12} md={6} className="mt-2">
+                        <Button
+                          type="button"
+                          variant="light"
+                          onClick={() => removeFromCartHandler(item.product)}
+                        >
+                          <i className="fas fa-trash"></i> Remove
+                        </Button>
+                      </Col>
+                    </Row>
                   </Col>
                 </Row>
               </ListGroup.Item>
@@ -92,23 +95,24 @@ const CartScreen = () => {
               <h2>
                 Subtotal ({cartItems.reduce((acc, item) => acc + item.qty, 0)}) items
               </h2>
-              $
-              {cartItems
-                .reduce((acc, item) => acc + item.qty * item.price, 0)
-                .toFixed(2)}
+              <h4>
+                Total Price: $
+                {cartItems
+                  .reduce((acc, item) => acc + item.qty * item.price, 0)
+                  .toFixed(2)}
+              </h4>
+            </ListGroup.Item>
+            <ListGroup.Item>
+              <Button
+                type="button"
+                className="w-100"
+                disabled={cartItems.length === 0}
+                onClick={checkoutHandler}
+              >
+                Proceed To Checkout
+              </Button>
             </ListGroup.Item>
           </ListGroup>
-
-          <ListGroup.Item>
-            <Button
-              type="button"
-              className="w-100"
-              disabled={cartItems.length === 0}
-              onClick={checkoutHandler}
-            >
-              Proceed To Checkout
-            </Button>
-          </ListGroup.Item>
         </Card>
       </Col>
     </Row>

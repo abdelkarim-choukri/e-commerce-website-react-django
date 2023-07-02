@@ -13,5 +13,6 @@ urlpatterns =[
     path('profile/update/',views.updateUserProfile,name="user_profile_update"),
     path('',views.getUsers,name='Users'),
     path('register/',views.registerUser,name='Register-User'),
+    path('delete/<int:pk>/',views.deleteUser,name='delete-User'),
 
 ]
