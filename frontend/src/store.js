@@ -11,6 +11,7 @@
   import orderslistReducer from "./features/reducers/orderslistSlice";
 
   import usersListReducer from "./features/reducers/usersListSlice";
+import adminEditUserReducer from "./features/reducers/adminEditUserSlice";
 
 
   const cartItemsFromStorage = localStorage.getItem("cartItems")
@@ -37,7 +38,7 @@
       orderDetail: orderDetailReducer,
       orderPay: orderPayReducer,
       ordersList: orderslistReducer,
-
+      adminEditUser:adminEditUserReducer,
       usersList: usersListReducer,
     },
     preloadedState: {

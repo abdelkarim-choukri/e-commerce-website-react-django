@@ -28,14 +28,15 @@ function ProfileScreen() {
   const { userInfo } = useSelector((state) => state.userLogin);
   const { isLoading ,error:listError,ordersList}=useSelector((state)=>state.ordersList);
 
-
+  
   useEffect(() => {
     if (!userInfo) {
       navigate("/login");
     } else {
-      if (!user || !user.name || success || userInfo._id !== user._id) {
+      if (!user || userInfo.id !== user.id) {
         dispatch(fetchUserDetail({ id: "profile" }));
         dispatch(listMyOrders())
+        console.log(userInfo)
         setName(userInfo.name);
         setEmail(userInfo.email);
       }

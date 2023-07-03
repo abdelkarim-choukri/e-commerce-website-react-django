@@ -12,24 +12,24 @@ import Loader from "../components/Loader";
 
 /* REACT - REDUX */
 import { useDispatch, useSelector } from "react-redux";
-import { deleteUser, getUserDeleted, getUsersList } from "../features/reducers/usersListSlice";
+import { getUserDeleted, getUsersList } from "../features/reducers/adminEditUserSlice";
 import { useNavigate } from "react-router-dom";
 
 function UsersListScreen() {
     const dispatch=useDispatch();
     const navigate=useNavigate()
-    const {users,loading,error} = useSelector((state)=>state.usersList);
-    const {userInfo} = useSelector((state)=>state.userLogin);
-    const {success} = useSelector((state)=>state.usersList);
+  const { users, loading, error } = useSelector((state) => state.adminEditUser.userslist);
+  const { userInfo } = useSelector((state) => state.userLogin);
+  const { success } = useSelector((state) => state.adminEditUser.deleteUser);
     
-    
+    console.log({users,loading,error})
     useEffect( ()=>{
         if (userInfo && userInfo.isAdmin){
         dispatch(getUsersList())
     }else{
         navigate('/login')
     }
-    } ,[dispatch])
+    } ,[dispatch,success])
     
     const deleteHandler = (id) => {
         if (window.confirm("Are you sure you want to delete this user ?"))

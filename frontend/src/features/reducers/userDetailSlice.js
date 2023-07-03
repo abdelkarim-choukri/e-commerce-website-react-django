@@ -28,6 +28,7 @@ export const fetchUserDetail = createAsyncThunk(
           Authorization: `Bearer ${userInfo.token}`,
         },
       };
+      console.log('api call',id)
 
       const response = await axios.get(`/api/users/${id}/`, config);
       const data = response.data;

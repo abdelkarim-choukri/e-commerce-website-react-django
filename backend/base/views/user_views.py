@@ -54,7 +54,7 @@ def registerUser(request):
 def updateUserProfile(request):
     user = request.user 
     serializer = UserSerializerWithToken(user,many = False)
-    data = request.data
+    data = request.data #Gets the data sent in the PUT request.
     user.first_name = data['name']
     user.username = data['email']
     user.email = data['email']
@@ -85,3 +85,25 @@ def deleteUser(request,pk):
     user=User.objects.get(id=pk)
     user.delete()
     return Response('user was deleted') 
+
+
+@api_view(['GET'])
+@permission_classes([IsAdminUser])
+def getUserById(request,pk):
+    user=User.objects.get(id=pk)
+    Serializer=UserSerializer(user,many=False)
+    return Response(Serializer.data) 
+
+@api_view(['GET'])
+@permission_classes([IsAdminUser])
+def updateUser(request,pk):
+    user=User.objects.get(id=pk)
+    data=request.data #Gets the data sent in the PUT request.
+
+    user.first_name = data.get('name')
+    user.username = data.get('email')  
+    user.email = data.get('email')
+
+    user.save()
+    serializer = UserSerializer(user,many=False)  
+    return Response(serializer.data)
