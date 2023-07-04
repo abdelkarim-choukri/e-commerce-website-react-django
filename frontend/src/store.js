@@ -12,6 +12,7 @@
 
   import usersListReducer from "./features/reducers/usersListSlice";
 import adminEditUserReducer from "./features/reducers/adminEditUserSlice";
+import adminEditProductReducer from "./features/reducers/adminEditProductSlice";
 
 
   const cartItemsFromStorage = localStorage.getItem("cartItems")
@@ -40,6 +41,7 @@ import adminEditUserReducer from "./features/reducers/adminEditUserSlice";
       ordersList: orderslistReducer,
       adminEditUser:adminEditUserReducer,
       usersList: usersListReducer,
+      adminEditProduct:adminEditProductReducer
     },
     preloadedState: {
       cart: {

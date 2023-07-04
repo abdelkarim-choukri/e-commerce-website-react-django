@@ -14,6 +14,7 @@ import FormContainer from "../components/FormContainer";
 /* REACT - REDUX */
 import { useDispatch, useSelector } from "react-redux";
 import { fetchUserDetail, updatUserDetail } from "../features/reducers/userDetailSlice";
+import adminEditUserSlice, { adminUpdateUser } from "../features/reducers/adminEditUserSlice";
 
 /* ACTION CREATORS */
 // import { getUserDetails, updateUser } from "../actions/userActions";
@@ -33,19 +34,15 @@ function UserEditScreen() {
   const navigate =useNavigate();
   /* PULLING A PART OF STATE FROM THE ACTUAL STATE IN THE REDUX STORE */
   const { user, loading, error,success } = useSelector((state) => state.userDetails);
+  const { Loading: loadingUpdate, 
+          error: errorUpdate, 
+          success: successUpdate } = useSelector((state) => state.adminEditUser.updateUser);
 
-//   const userUpdate = useSelector((state) => state.userUpdate);
-//   const {
-//     error: error,
-//     loading: loading,
-//     success: successUpdate,
-//   } = userUpdate;
 
   useEffect(() => {
     /* IF USER SUCCESSFULLY UPDATED, RESET USER DETAILS & REDIRECT USER TO ADMIN PAGE */
-    if (success) {
-    //   dispatch({ type: USER_UPDATE_RESET });
-        navigate("/admin/userlist");
+    if (successUpdate) {
+      navigate("/admin/userslist");
     } else {
       /* IF WE DON'T HAVE A USER, OR IF WE HAVE DATA LOADED IN BUT WE ARE EDITING SOME OTHER USER THEN WE DISPATCH AND GET DATA OF THAT USER */
       if (!user || user._id !== Number(id)) {
@@ -57,15 +54,17 @@ function UserEditScreen() {
         setIsAdmin(user.isAdmin);
       }
     }
-  }, [dispatch, user, id, success]);
+  }, [dispatch, user, id, success,successUpdate]);
 
   /* HANDLERS */
 
   const submitHandler = (e) => {
     e.preventDefault();
-
-    dispatch(updatUserDetail({ _id: user._id, name, email, isAdmin }));
+    console.log('id', id);
+    console.log('user', user);
+    dispatch(adminUpdateUser({ id: user._id, user: { name, email, isAdmin } }));
   };
+  
 
   return (
     <div>

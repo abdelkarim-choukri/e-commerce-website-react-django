@@ -94,16 +94,17 @@ def getUserById(request,pk):
     Serializer=UserSerializer(user,many=False)
     return Response(Serializer.data) 
 
-@api_view(['GET'])
+@api_view(['PUT'])
 @permission_classes([IsAdminUser])
 def updateUser(request,pk):
     user=User.objects.get(id=pk)
     data=request.data #Gets the data sent in the PUT request.
-
+    print(data)
     user.first_name = data.get('name')
     user.username = data.get('email')  
     user.email = data.get('email')
-
+    user.is_staff = data.get('isAdmin')
+    
     user.save()
     serializer = UserSerializer(user,many=False)  
     return Response(serializer.data)

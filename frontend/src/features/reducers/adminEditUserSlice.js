@@ -45,6 +45,36 @@ async({id},{ getState })=>{
     }
 });
 
+export const adminUpdateUser = createAsyncThunk('users/adminUpdateUser',
+async({id,user},{getState})=>{
+  try {
+    const {
+      userLogin: { userInfo },
+    } = getState();
+
+    const config={
+      headers:{
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${userInfo.token}`,
+      }
+    }
+    console.log('id',id);
+    console.log('user',user);
+    
+    const body = JSON.stringify({ user });
+    
+    console.log('body',body);
+
+    const {data}=await axios.put(`/api/users/update/${id}/`,user,config)
+    return data ;
+  } catch (error) {
+    console.log(error) ;
+    throw error
+  }
+
+}
+)
+
 const adminEditUsertSlice=createSlice({
     name:'adminEditUser',
     initialState:{
@@ -55,7 +85,12 @@ const adminEditUsertSlice=createSlice({
         deleteUser:{
             success:false,
             Loading:false,
+        },
+        updateUser:{
+          success:false,
+          Loading:false,
         }
+
         
     },
     reducers:{
@@ -90,10 +125,22 @@ const adminEditUsertSlice=createSlice({
           ? action.error.response.data.detail
           : action.error.message; 
         })
-        
-        
+        //update
+        .addCase(adminUpdateUser.pending,(state)=>{
+          state.updateUser.Loading=true;
+        })
+        .addCase(adminUpdateUser.fulfilled,(state,action)=>{
+            state.updateUser.Loading=false;
+            state.updateUser.success=true;
+        })
+        .addCase(adminUpdateUser.rejected,(state,action)=>{
+            state.updateUser.Loading=false;
+            state.updateUser.error = action.error.response && action.error.response.data.detail
+          ? action.error.response.data.detail
+          : action.error.message; 
+        })
+               
     }
-
 }
 );
 
