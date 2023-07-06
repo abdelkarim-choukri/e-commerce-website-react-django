@@ -7,7 +7,7 @@ import { useNavigate } from "react-router-dom";
 import Message from "../components/Message";
 import Loader from "../components/Loader";
 import { fetchProductList } from "../features/reducers/productReducers";
-import { getProductDeleted } from "../features/reducers/adminEditProductSlice";
+import { getProdectCreated, getProductDeleted } from "../features/reducers/adminEditProductSlice";
 
 
 function ProductListScreen() {
@@ -18,7 +18,9 @@ function ProductListScreen() {
     (state) => state.productList
   );
   const {loading: loadingDelete, success:successDelete,error:errorDelete } = useSelector(
-    (state) => state.adminEditProduct.deleteProduct
+    (state) => state.adminEditProduct.deleteProduct);
+  const {loading: loadingCreate, success:successCreate,error:errorCreate,product:createdProduct } = useSelector(
+    (state) => state.adminEditProduct.createProduct
   );
   const { userInfo } = useSelector((state) => state.userLogin);
     console.log(products)
@@ -26,9 +28,14 @@ function ProductListScreen() {
     if (!userInfo.isAdmin) {
       navigate("/login");
     }
+    if (successCreate) {
+      navigate(`/admin/product/${createdProduct._id}/edit`);
+    }  
+      dispatch(fetchProductList());
+    
 
-    dispatch(fetchProductList());
-  }, [dispatch, userInfo,successDelete]);
+    
+  }, [dispatch, userInfo,successDelete,successCreate]);
 
   const deleteHandler = (id) => {
     if (window.confirm("Are you sure you want to delete this product?")) {
@@ -37,7 +44,8 @@ function ProductListScreen() {
   };
 
   const createProductHandler = () => {
-    // dispatch(createProduct());
+    const product={}
+    dispatch(getProdectCreated(product));
   };
 
   return (
@@ -53,8 +61,8 @@ function ProductListScreen() {
           </Button>
         </Col>
       </Row>
-      {/* {loadingCreate && <Loader />}
-      {errorCreate && <Message variant="danger">{errorCreate}</Message>} */}
+      {loadingCreate && <Loader/>}
+      {errorCreate && <Message variant="danger">{errorCreate}</Message>}
 
       {loadingDelete && <Loader />}
       {errorDelete && <Message variant="danger">{errorDelete}</Message>}
