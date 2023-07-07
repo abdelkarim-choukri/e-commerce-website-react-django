@@ -27,7 +27,7 @@ import { getProdectUpdated } from "../features/reducers/adminEditProductSlice";
 
 function ProductEditScreen() {
   /* GETTING USER ID FROM URL */
-//   const productId = match.params.id;
+//   const id = match.params.id;
     // const {id} =useParams();
     const { id } = useParams();
 
@@ -82,7 +82,6 @@ function ProductEditScreen() {
         _id: id,
         name,
         price,
-        image,
         brand,
         category,
         countInStock,
@@ -95,28 +94,27 @@ function ProductEditScreen() {
     const formData = new FormData();
 
     formData.append("image", file);
-    formData.append("_id", id);
-    formData.append("name", name);
-    formData.append("price", price);
-    formData.append("brand", brand);
-    formData.append("category", category);
-    formData.append("countInStock", countInStock);
-    formData.append("description", description);
+    formData.append("product_id", id);
 
     setUploading(true);
 
     try {
       const config = {
-        headers: {
+        header: {
           "Content-Type": "multipart/form-data",
         },
       };
 
-      const { data } = await axios.put(`/api/products/update/${id}/`, formData, config);
+      const { data } = await axios.post(
+        "/api/products/upload/",
+        formData,
+        config
+      );
 
       setImage(data);
       setUploading(false);
     } catch (error) {
+      console.log(error)
       setUploading(false);
     }
   };

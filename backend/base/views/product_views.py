@@ -4,6 +4,7 @@ from rest_framework.permissions import IsAuthenticated,IsAdminUser
 from rest_framework.response import Response
 from rest_framework import status
 from base.serializers import ProductSerializer 
+from django.shortcuts import get_object_or_404
 
 # Local Import
 
@@ -61,3 +62,12 @@ def updateProduct(request, pk):
         return Response('serialized_product.data', status=status.HTTP_200_OK)
     
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['POST'])
+def uploadImage(request):
+    data = request.data
+    product_id = data['product_id']
+    product = get_object_or_404(Product, _id=product_id)
+    product.image = request.FILES.get('image')
+    product.save()
+    return Response({"message": "Image was uploaded"}, status=status.HTTP_200_OK)

@@ -3,7 +3,7 @@ import { Link, useParams } from "react-router-dom";
 import { Row, Col, ListGroup, Image, Card, Button } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchOrderDetail } from "../features/reducers/orderDetailSlice";
-import { fetchpayOrder } from "../features/reducers/orderPaySlice";
+import { fetchDeleverOrder, fetchpayOrder } from "../features/reducers/orderPaySlice";
 import { PayPalScriptProvider, PayPalButtons, usePayPalScriptReducer } from "@paypal/react-paypal-js";
 
 import Message from "../components/Message";
@@ -75,6 +75,9 @@ function OrderScreen({ history, match }) {
   const { loading: loadingPay, success: successPay } = useSelector(
     (state) => state.orderPay
   );
+  const { loadingDelever, successDelever } = useSelector(
+    (state) => state.orderPay
+  );
 
   
 
@@ -98,11 +101,14 @@ function OrderScreen({ history, match }) {
     } else if (orderDetail && !orderDetail.isPaid) {
       setSdkReady(true);
     }
-  }, [dispatch, id,successPay]);
+  }, [dispatch, id,successPay,successDelever]);
   
 
   const successPaymentHandler = (paymentResult) => {
     dispatch(fetchpayOrder(id, paymentResult));
+  };
+  const deliverHandler = () => {
+    dispatch(fetchDeleverOrder({id}));
   };
 
   console.log(orderDetail.totalPrice);
@@ -270,14 +276,14 @@ function OrderScreen({ history, match }) {
               
             </ListGroup>
 
-            {/* {loadingDeliver && <Loader />} */}
+            {loadingDelever && <Loader />}
 
             {userInfo && userInfo.isAdmin && orderDetail.isPaid && !orderDetail.isDeliver && (
               <ListGroup.Item>
                 <Button
                   type="button"
                   className="btn w-100"
-                  // onClick={deliverHandler}
+                  onClick={deliverHandler}
                 >
                   Mark As Delivered
                 </Button>
