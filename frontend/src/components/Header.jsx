@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { NavLink } from 'react-bootstrap';
 import Container from 'react-bootstrap/Container';
@@ -8,47 +9,47 @@ import NavDropdown from 'react-bootstrap/NavDropdown';
 import { logout } from '../features/reducers/userSlice';
 
 import '../App.css';
-import { useDispatch, useSelector } from "react-redux";
-import { LinkContainer } from 'react-router-bootstrap'; 
+import { useDispatch, useSelector } from 'react-redux';
+import { LinkContainer } from 'react-router-bootstrap';
 import { orderReset } from '../features/reducers/orderDetailSlice';
 import { ordersListReset } from '../features/reducers/orderslistSlice';
-
-
+import SearchBox from './SearchBox';
 
 function Header() {
-    /* PULLING A PART OF STATE FROM THE ACTUAL STATE IN THE REDUX STORE */
-    const  {userInfo}  = useSelector((state) => state.userLogin);
+  const { userInfo } = useSelector((state) => state.userLogin);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
-    const dispatch = useDispatch();
-    const navigate =useNavigate()
-  // console.log('name',userInfo.name);// redo 1 object machi array of object 
-  
-    const logoutHandler = () => {
-      localStorage.clear();
-      dispatch(logout());
-      dispatch(orderReset());
-      dispatch(ordersListReset());
-      navigate('/')
-    };
+  const logoutHandler = () => {
+    localStorage.clear();
+    dispatch(logout());
+    dispatch(orderReset());
+    dispatch(ordersListReset());
+    navigate('/');
+  };
+
   return (
     <>
       <Navbar bg="dark" variant="dark" expand="lg">
-        <Container>
-          <Navbar.Brand href="/">SOUPERSHOPE</Navbar.Brand>
-          <Nav className="me-auto">
-          <NavLink href={userInfo ? `/cart/${userInfo.id}` : "/login"}>
-            <i className="fas fa-shopping-cart"></i> Cart
-            </NavLink>  
+        <Container fluid>
+          <Navbar.Brand as={Link} to="/">
+            SOUPERSHOPE
+          </Navbar.Brand>
+          <Navbar.Toggle aria-controls="navbar-nav" />
+          <Navbar.Collapse id="navbar-nav">
+            <SearchBox />
+            <Nav className="ms-auto">
+              <Nav.Link as={NavLink} href={userInfo ? `/cart/${userInfo.id}` : '/login'}>
+                <i className="fas fa-shopping-cart"></i> Cart
+              </Nav.Link>
 
-            {userInfo ? (
+              {userInfo ? (
                 <NavDropdown title={userInfo.name} id="username">
                   <LinkContainer to="/profile">
                     <NavDropdown.Item>Profile</NavDropdown.Item>
                   </LinkContainer>
 
-                  <NavDropdown.Item onClick={logoutHandler}>
-                    Logout
-                  </NavDropdown.Item>
+                  <NavDropdown.Item onClick={logoutHandler}>Logout</NavDropdown.Item>
                 </NavDropdown>
               ) : (
                 <LinkContainer to="/login">
@@ -72,8 +73,9 @@ function Header() {
                     <NavDropdown.Item>Orders</NavDropdown.Item>
                   </LinkContainer>
                 </NavDropdown>
-              )}    
-          </Nav>
+              )}
+            </Nav>
+          </Navbar.Collapse>
         </Container>
       </Navbar>
     </>

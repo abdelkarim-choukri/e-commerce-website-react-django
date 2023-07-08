@@ -3,8 +3,9 @@ import axios from 'axios';
 
 export const fetchProductList = createAsyncThunk(
   'productList/fetchProductList',
-  async () => {
-    const response = await axios.get('/api/products');
+  async (keyword) => {
+    const response = await axios.get(`/api/products${keyword}`);
+    console.log(response)
     return response.data;
   }
 );
@@ -17,6 +18,9 @@ export const productReducer = createSlice({
     loading: false,
     products: [],
     error: '',
+    page:null,
+    pages:null,
+
   },
   reducers: {},
   extraReducers: (builder) => {
@@ -26,7 +30,9 @@ export const productReducer = createSlice({
       })
       .addCase(fetchProductList.fulfilled, (state, action) => {
         state.loading = false;
-        state.products = action.payload;
+        state.products = action.payload.products;
+        state.page = action.payload.page;
+        state.pages = action.payload.pages;
       })
       .addCase(fetchProductList.rejected, (state, action) => {
         state.loading = false;

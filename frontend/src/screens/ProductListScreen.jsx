@@ -8,6 +8,8 @@ import Message from "../components/Message";
 import Loader from "../components/Loader";
 import { fetchProductList } from "../features/reducers/productReducers";
 import { getProdectCreated, getProductDeleted } from "../features/reducers/adminEditProductSlice";
+import Paginate from "../components/Paginate";
+
 
 
 function ProductListScreen() {
@@ -113,6 +115,7 @@ function ProductListScreen() {
               ))}
             </tbody>
           </Table>
+          <Paginate pages={pages} page={page} isAdmin={true} />
         </div>
       )}
     </div>
