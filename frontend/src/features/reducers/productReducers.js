@@ -4,13 +4,20 @@ import axios from 'axios';
 export const fetchProductList = createAsyncThunk(
   'productList/fetchProductList',
   async (keyword) => {
+    console.log(keyword)
     const response = await axios.get(`/api/products${keyword}`);
-    console.log(response)
     return response.data;
   }
 );
 
-
+export const  listTopProducts = createAsyncThunk(
+  'productList/ listTopProducts',
+  async () => {
+    const { data } = await axios.get(`/api/products/top/`);
+    console.log(data)
+    return data;
+  }
+);
 
 export const productReducer = createSlice({
   name: 'productList',
@@ -20,6 +27,11 @@ export const productReducer = createSlice({
     error: '',
     page:null,
     pages:null,
+    top:{
+      topProducts:[],
+      loading:false,
+      error:'',
+    }
 
   },
   reducers: {},
@@ -40,7 +52,22 @@ export const productReducer = createSlice({
         state.error= action.error.response && action.error.response.data.detail
             ? action.error.response.data.detail
             : action.error.message;
-          });
+          })
+          //top product
+      .addCase(listTopProducts.pending, (state) => {
+        state.top.loading = true;
+      })
+      .addCase(listTopProducts.fulfilled, (state, action) => {
+        state.top.loading = false;
+        state.top.topProducts = action.payload;
+      })
+      .addCase(listTopProducts.rejected, (state, action) => {
+        state.top.loading = false;
+        state.top.error= action.error.response && action.error.response.data.detail
+            ? action.error.response.data.detail
+            : action.error.message;
+        console.log('error',state.top.error)
+          })
         },
       });
       

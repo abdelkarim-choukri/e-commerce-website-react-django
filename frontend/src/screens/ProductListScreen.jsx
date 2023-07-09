@@ -16,7 +16,7 @@ function ProductListScreen() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const { products, loading: loadingProduct, error: errorProduct } = useSelector(
+  const { products, loading: loadingProduct, error: errorProduct,page,pages } = useSelector(
     (state) => state.productList
   );
   const {loading: loadingDelete, success:successDelete,error:errorDelete } = useSelector(
@@ -26,6 +26,9 @@ function ProductListScreen() {
   );
   const { userInfo } = useSelector((state) => state.userLogin);
     console.log(products)
+    const keyword = location.search;
+    console.log(keyword)
+  
   useEffect(() => {
     if (!userInfo.isAdmin) {
       navigate("/login");
@@ -33,11 +36,11 @@ function ProductListScreen() {
     if (successCreate) {
       navigate(`/admin/product/${createdProduct._id}/edit`);
     }  
-      dispatch(fetchProductList());
+      dispatch(fetchProductList(keyword));
     
 
     
-  }, [dispatch, userInfo,successDelete,successCreate]);
+  }, [dispatch, userInfo,successDelete,successCreate,keyword]);
 
   const deleteHandler = (id) => {
     if (window.confirm("Are you sure you want to delete this product?")) {
@@ -116,6 +119,7 @@ function ProductListScreen() {
             </tbody>
           </Table>
           <Paginate pages={pages} page={page} isAdmin={true} />
+          
         </div>
       )}
     </div>

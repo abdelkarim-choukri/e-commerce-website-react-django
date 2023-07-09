@@ -7,7 +7,8 @@ import Loader from '../components/Loader';
 import Message from '../components/Message';
 import { useLocation } from 'react-router-dom';
 import Paginate from '../components/Paginate';
-
+import ProductCarousel from '../components/ProductCarousel';
+import '../index.css';
 function HomeScreen() {
   const dispatch = useDispatch();
   const productList = useSelector((state) => state.productList);
@@ -16,16 +17,18 @@ function HomeScreen() {
   /* IF USER SEARCHES FOR ANYTHING THEN THIS KEYWORD CHANGES AND USE EFFECT GETS TRIGGERED */
   const location = useLocation();
   const keyword = location.search;
-  console.log(keyword);
+
 
   useEffect(() => {
-    console.log('dwqd');
+    
     dispatch(fetchProductList(keyword));
   }, [dispatch, keyword]);
 
  
   return (<>
   <Container>
+  {!keyword  && <ProductCarousel />}
+    
       <h1>Latest Products</h1>
       {loading ? (
         <Loader />

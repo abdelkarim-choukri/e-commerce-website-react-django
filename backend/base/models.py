@@ -17,8 +17,13 @@ class Product(models.Model):
     createdAt = models.DateTimeField(auto_now_add=True)
     _id = models.AutoField(primary_key=True,editable=False)
 
+    # def __str__(self):
+    #     return self.name +" | "+self.brand +" | " + str(self.price)
     def __str__(self):
-        return self.name +" | "+self.brand +" | " + str(self.price)
+        name = self.name if self.name else "N/A"
+        brand = self.brand if self.brand else "N/A"
+        price = str(self.price) if self.price else "N/A"
+        return f"{name} | {brand} | {price}"
 
 
 class Review(models.Model):
