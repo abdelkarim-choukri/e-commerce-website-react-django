@@ -1,0 +1,14 @@
+{
+  "src/main.css": {
+    "file": "theme/main-3641534b.css",
+    "src": "src/main.css"
+  },
+  "src/main.jsx": {
+    "css": [
+      "theme/main-3641534b.css"
+    ],
+    "file": "theme/main-f55ab804.js",
+    "isEntry": true,
+    "src": "src/main.jsx"
+  }
+}
