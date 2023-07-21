@@ -1,13 +1,13 @@
 {
   "src/main.css": {
-    "file": "frontend/main-3641534b.css",
+    "file": "frontend/main-b1b1ae15.css",
     "src": "src/main.css"
   },
   "src/main.jsx": {
     "css": [
-      "frontend/main-3641534b.css"
+      "frontend/main-b1b1ae15.css"
     ],
-    "file": "frontend/main-5fdcbbfb.js",
+    "file": "frontend/main-6250d6fb.js",
     "isEntry": true,
     "src": "src/main.jsx"
   }
