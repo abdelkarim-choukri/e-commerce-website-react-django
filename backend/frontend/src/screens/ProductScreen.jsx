@@ -6,7 +6,7 @@ import { Link, useNavigate, useParams } from 'react-router-dom';
 import { Container, Row, Col } from 'react-bootstrap';
 
 import Rating from '../components/Rating';
-
+import '../index.css';
 import { useDispatch, useSelector } from 'react-redux';
 import Loader from '../components/Loader';
 import Message from '../components/Message';
@@ -54,13 +54,17 @@ function ProductScreen({match}) {
             Go Back
           </Link>
           <div>
-            <Container>
+            <Container className='first-class' >
               <Row>
-                <Col md={6}>
-                  <Image src={product.image} alt={product.name} fluid />
+                <Col md={4} object-fit="cover" width="200" max-width="300" >
+                  <Image 
+                    src={product.image} 
+                    alt={product.name} 
+                    fluid 
+                    />
                 </Col>
 
-                <Col md={3}>
+                <Col>
                   <ListGroup variant="flush">
                     <ListGroup.Item>
                       <h3>{product.name}</h3>
@@ -76,13 +80,13 @@ function ProductScreen({match}) {
 
                     <ListGroup.Item>Price: ${product.price}</ListGroup.Item>
 
-                    <ListGroup.Item>
+                    <ListGroup.Item >
                       Description: {product.description}
                     </ListGroup.Item>
                   </ListGroup>
                 </Col>
 
-                <Col>
+                <Col md={3}>
                   <Card>
                     <ListGroup variant="flush">
                       <ListGroup.Item>
